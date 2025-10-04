@@ -1,6 +1,6 @@
 # Coordinate Converter 🌐
 
-A simple and interactive web app for converting coordinates between different Coordinate Reference Systems (CRS) using [pyproj](https://pyproj4.github.io/pyproj/), [pandas](https://pandas.pydata.org/),
+A free, simple, and interactive web app for converting coordinates between different Coordinate Reference Systems (CRS) using [pyproj](https://pyproj4.github.io/pyproj/), [pandas](https://pandas.pydata.org/),
 [Streamlit](https://streamlit.io/), and [Folium](https://python-visualization.github.io/folium/).
 
 ## Features

@@ -6,7 +6,7 @@ from streamlit_folium import folium_static
 
 # --- App Title and Introduction ---
 st.markdown('<h1 style="text-align:center;">Coordinate Converter 🌐</h1>', unsafe_allow_html=True)
-st.text("This is a simple coordinate converter app using pyproj library for 2D CRS conversion.")
+st.text("This is a simple coordinate converter app using pyproj library.")
 
 # --- User Guide Popover ---
 with st.popover("User Guide"):
@@ -26,23 +26,24 @@ with st.popover("User Guide"):
 @st.cache_data
 def get_epsg_codes():
     """
-    Retrieves a list of available 2D CRS information from the pyproj database,
-    including EPSG codes. Only 2D (horizontal) systems are included.
-    Returns: dictionary mapping CRS name to EPSG code (as 'EPSG:xxxx')
+    Retrieves a list of available CRS information from the pyproj database,
+    including EPSG codes.
+
+    returns: dictionary of retrieved epsg based on their names and codes
     """
     crs_info_list = pyproj.database.query_crs_info(auth_name="EPSG", pj_types=None)
+
     epsg_dict = dict()
+    for info in crs_info_list:
+        if info.code and info.name:
+            # Use both name and code for uniqueness
+            key = f"{info.name} (EPSG:{info.code})"
+            epsg_dict[key] = f"EPSG:{info.code}"
 
-    if not epsg_dict:
-        for info in crs_info_list:
-            if info.code and info.name:
-                if info.name not in epsg_dict:
-                    epsg_dict[info.name] = f"EPSG:{info.code}"
     epsg_dict = dict(sorted(epsg_dict.items()))
-
     return epsg_dict
 
-epsg_dict = get_epsg_codes()
+epsg_dict= get_epsg_codes()
 
 # --- CRS Selection (common to both modes) ---
 st.markdown('<h4 ">Select source and target CRS</h4>', unsafe_allow_html=True)
@@ -90,6 +91,8 @@ if not batch_mode:
                 lon_col, lat_col = st.columns(2)
                 lon_col.metric("Converted Longitude (X):", f"{x:.4f}")
                 lat_col.metric("Converted Latitude (Y):", f"{y:.4f}")
+
+                st.text(f"Map View of Converted Coordinates from {epsg_dict[source_crs]} to {epsg_dict[target_crs]}")
 
                 # Always convert to WGS84 for plotting on Folium map
                 wgs84 = pyproj.CRS("EPSG:4326")
