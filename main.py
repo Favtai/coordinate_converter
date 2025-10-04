@@ -44,7 +44,6 @@ def get_epsg_codes():
     for EPSGs in epsg_codes:
         epsg_dict.update({pyproj.CRS.from_user_input(EPSGs).name: EPSGs})
 
-    epsg_dict = dict(sorted(epsg_dict.items()))
     return epsg_dict
 
 # --- Get EPSG Dictionary ---
